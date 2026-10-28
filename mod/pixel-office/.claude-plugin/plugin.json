@@ -1,0 +1,11 @@
+{
+  "name": "pixel-office",
+  "displayName": "Pixel Office",
+  "version": "1.0.3",
+  "description": "Liga a sessão ao Pixel Office: grava o uso do plano (5h e semanal) para o escritório, avisa embaixo do prompt quando outra sessão precisa de você e adiciona o comando /pixel-office.",
+  "author": { "name": "SrLuizGuimaraes", "url": "https://github.com/SrLuizGuimaraes" },
+  "homepage": "https://github.com/SrLuizGuimaraes/pixel-office#readme",
+  "repository": "https://github.com/SrLuizGuimaraes/pixel-office",
+  "license": "MIT",
+  "keywords": ["pixel-office", "escritorio", "uso", "rate-limits", "status"]
+}

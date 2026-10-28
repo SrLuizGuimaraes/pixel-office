@@ -1,0 +1,11 @@
+{
+  "name": "pixel-office-permissoes",
+  "displayName": "Pixel Office: permissões pelo escritório",
+  "version": "1.0.3",
+  "description": "Hook PermissionRequest que deixa aprovar ou recusar pelo Pixel Office os pedidos de permissão do Claude Code e responder as perguntas do AskUserQuestion; o diálogo continua no terminal e vale o que você responder primeiro.",
+  "author": { "name": "SrLuizGuimaraes", "url": "https://github.com/SrLuizGuimaraes" },
+  "homepage": "https://github.com/SrLuizGuimaraes/pixel-office#readme",
+  "repository": "https://github.com/SrLuizGuimaraes/pixel-office",
+  "license": "MIT",
+  "keywords": ["pixel-office", "permissoes", "hooks"]
+}

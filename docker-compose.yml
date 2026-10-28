@@ -1,0 +1,72 @@
+# Pixel Office no Docker local.
+#
+# Suba com `npm run docker:up`: o script detecta as contas do Claude Code no host e gera o
+# docker-compose.override.yml (fora do controle de versão) com:
+#   - montagens SOMENTE LEITURA de <conta>/projects e <conta>/sessions em /claude/<conta>/...
+#     (nunca a pasta inteira da conta: lá ficam credenciais e configurações) e de ~/.pixel-office/usage
+#     (uso de 5h/semanal capturado pelo tap de statusline) em /usage;
+#   - do Codex, SOMENTE <pasta>/sessions, <pasta>/archived_sessions e <pasta>/thread-writer-locks em
+#     /codex/<conta>/... (nunca auth.json, config.toml, history.jsonl, logs nem os bancos SQLite);
+#   - PIXEL_OFFICE_CLAUDE_DIRS, PIXEL_OFFICE_CODEX_DIRS, PIXEL_OFFICE_ACCOUNTS e PIXEL_OFFICE_USAGE_DIR.
+# O Compose mescla o override automaticamente em qualquer `docker compose ...` rodado nesta pasta.
+name: pixel-office
+
+services:
+  pixel-office:
+    build: .
+    image: pixel-office:local
+    container_name: pixel-office
+    restart: unless-stopped
+    # Os transcripts são sensíveis: por padrão a porta é publicada SÓ na interface local do host
+    # (PIXEL_OFFICE_BIND=0.0.0.0 no .env libera a rede local; veja o README).
+    ports:
+      - "${PIXEL_OFFICE_BIND:-127.0.0.1}:${PIXEL_OFFICE_PORT:-4747}:4747"
+      # A porta do acesso pelo celular (com login) só é publicada depois do npm run remote:setup: quem a junta é o
+      # docker-compose.override.yml que o docker:up gera.
+    volumes:
+      - pixel-office-data:/data
+    # Opções que podem vir do .env (ou do ambiente) para dentro do container.
+    environment:
+      PIXEL_OFFICE_ALLOWED_HOSTS: ${PIXEL_OFFICE_ALLOWED_HOSTS:-}
+      PIXEL_OFFICE_DEMO: ${PIXEL_OFFICE_DEMO:-}
+      # O mesmo valor da porta publicada acima: o terminal (e o que age sobre as sessões) só liga com bind local.
+      PIXEL_OFFICE_BIND: ${PIXEL_OFFICE_BIND:-127.0.0.1}
+      PIXEL_OFFICE_TERMINAL: ${PIXEL_OFFICE_TERMINAL:-}
+      # 0 desliga as mensagens pelo escritório (mandar mensagens aos agentes pela página e pelo terminal).
+      PIXEL_OFFICE_MENSAGENS: ${PIXEL_OFFICE_MENSAGENS:-}
+      # 0 desliga a verificação de versão nova (consulta às releases no GitHub a cada 6 h).
+      PIXEL_OFFICE_UPDATE_CHECK: ${PIXEL_OFFICE_UPDATE_CHECK:-}
+      PIXEL_OFFICE_LANG: ${PIXEL_OFFICE_LANG:-}
+      # 0 desliga as sessões do Codex no escritório.
+      PIXEL_OFFICE_CODEX: ${PIXEL_OFFICE_CODEX:-}
+      # 1 liga o Novo agente pelo escritório (no Docker, quem começa a sessão é o auxiliar do host, npm run
+      # codex:bridge; o terminal interativo em si não roda no container).
+      PIXEL_OFFICE_PTY: ${PIXEL_OFFICE_PTY:-}
+      # Acesso remoto com login (server/http/remote.ts).
+      PIXEL_OFFICE_REMOTE_USER: ${PIXEL_OFFICE_REMOTE_USER:-}
+      PIXEL_OFFICE_REMOTE_PASSWORD_HASH: ${PIXEL_OFFICE_REMOTE_PASSWORD_HASH:-}
+      PIXEL_OFFICE_REMOTE_ALLOW: ${PIXEL_OFFICE_REMOTE_ALLOW:-}
+      PIXEL_OFFICE_REMOTE_INSECURE_HTTP: ${PIXEL_OFFICE_REMOTE_INSECURE_HTTP:-}
+      # Pixel Office World (desligado: sem servidor padrão; só liga com PIXEL_OFFICE_WORLD_URL; nada sai antes de criar a conta). PIXEL_OFFICE_WORLD=0 desliga tudo.
+      PIXEL_OFFICE_WORLD: ${PIXEL_OFFICE_WORLD:-}
+      PIXEL_OFFICE_WORLD_URL: ${PIXEL_OFFICE_WORLD_URL:-}
+      PIXEL_OFFICE_WORLD_DEV: ${PIXEL_OFFICE_WORLD_DEV:-}
+    # O host visto de dentro do container (servidor do Pixel Office World local em teste: PIXEL_OFFICE_WORLD_URL=
+    # http://host.docker.internal:<porta> com PIXEL_OFFICE_WORLD_DEV=1). No Docker Desktop o nome já existe; no Linux,
+    # host-gateway o aponta para o host. Inofensivo sem o World.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # Endurecimento: sistema de arquivos só leitura (exceto /data e /tmp), sem capabilities extras.
+    read_only: true
+    # /tmp em memória, com teto: sem `size` o Docker deixa usar metade da RAM do host.
+    tmpfs:
+      - /tmp:size=64m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    # Processo init mínimo: repassa sinais e recolhe processos órfãos.
+    init: true
+
+volumes:
+  pixel-office-data:

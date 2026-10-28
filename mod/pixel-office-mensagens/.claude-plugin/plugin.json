@@ -1,0 +1,11 @@
+{
+  "name": "pixel-office-mensagens",
+  "displayName": "Pixel Office: mensagens pelo escritório",
+  "version": "1.0.3",
+  "description": "Leva para a sessão do Claude Code as mensagens que você digita no Pixel Office (painel do agente ou terminal), como se você as tivesse digitado no terminal.",
+  "author": { "name": "SrLuizGuimaraes", "url": "https://github.com/SrLuizGuimaraes" },
+  "homepage": "https://github.com/SrLuizGuimaraes/pixel-office#readme",
+  "repository": "https://github.com/SrLuizGuimaraes/pixel-office",
+  "license": "MIT",
+  "keywords": ["pixel-office", "escritorio", "mensagens", "prompt"]
+}

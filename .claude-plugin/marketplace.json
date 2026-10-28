@@ -1,0 +1,26 @@
+{
+  "name": "pixel-office",
+  "owner": { "name": "SrLuizGuimaraes", "url": "https://github.com/SrLuizGuimaraes" },
+  "description": "Plugins do Pixel Office, o escritório virtual em pixel art das suas sessões do Claude Code.",
+  "version": "1.0.3",
+  "plugins": [
+    {
+      "name": "pixel-office",
+      "source": "./mod/pixel-office",
+      "description": "Mod do Pixel Office: uso do plano (5h e semanal) para o escritório, aviso embaixo do prompt quando outra sessão precisa de você e o comando /pixel-office.",
+      "category": "productivity"
+    },
+    {
+      "name": "pixel-office-permissoes",
+      "source": "./mod/pixel-office-permissoes",
+      "description": "Aprovar ou recusar pelo Pixel Office os pedidos de permissão do Claude Code e responder as perguntas do agente (hook PermissionRequest).",
+      "category": "productivity"
+    },
+    {
+      "name": "pixel-office-mensagens",
+      "source": "./mod/pixel-office-mensagens",
+      "description": "Mandar mensagens pelo Pixel Office: o que você digita no escritório entra na sessão como se você tivesse digitado no terminal.",
+      "category": "productivity"
+    }
+  ]
+}
